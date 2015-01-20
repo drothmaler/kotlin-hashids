@@ -180,7 +180,7 @@ public class Hashids(salt: String = "", length: Int = 0, alphabet: String = "abc
 
         var arr = LongArray(retArray.size())
         for (index in retArray.indices) {
-            arr[index] = retArray.get(index)
+            arr[index] = retArray[index]
         }
 
         if (encode(*arr) != hash) {
@@ -207,7 +207,7 @@ public class Hashids(salt: String = "", length: Int = 0, alphabet: String = "abc
             matched.add(java.lang.Long.parseLong("1" + matcher.group(), 16))
 
         val result = LongArray(matched.size())
-        for (i in matched.indices) result[i] = matched.get(i)
+        for (i in matched.indices) result[i] = matched[i]
 
         return encode(*result)
     }
