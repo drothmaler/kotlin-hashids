@@ -37,7 +37,7 @@ public class Hashids(salt: String = "", length: Int = 0, alphabet: String = "abc
          */
         val sepsLength = seps.length() - 1
         for (index in 0..sepsLength) {
-            val position = this.alphabet.indexOf(seps.charAt(index))
+            val position = this.alphabet.indexOf(seps[index])
 
             if (position == -1) {
                 seps = seps.substring(0, index) + " " + seps.substring(index + 1)
@@ -97,7 +97,7 @@ public class Hashids(salt: String = "", length: Int = 0, alphabet: String = "abc
             numberHashInt += (numbers[i] % (i + 100)).toInt()
 
         var alphabet = this.alphabet
-        val retInt = alphabet.toCharArray()[numberHashInt % alphabet.length()]
+        val retInt = alphabet[numberHashInt % alphabet.length()]
 
         var retString = retInt + ""
 
@@ -112,21 +112,21 @@ public class Hashids(salt: String = "", length: Int = 0, alphabet: String = "abc
             retString += last
 
             if (i + 1 < numbers.size()) {
-                num %= (last.toCharArray()[0] + i)
+                num %= (last[0] + i)
                 val sepsIndex = (num % seps.length()).toInt()
-                retString += seps.toCharArray()[sepsIndex]
+                retString += seps[sepsIndex]
             }
         }
 
         if (retString.length() < length) {
-            var guardIndex = (numberHashInt + retString.toCharArray()[0]) % guards!!.length()
-            var guard = guards!!.toCharArray()[guardIndex]
+            var guardIndex = (numberHashInt + retString[0]) % guards!!.length()
+            var guard = guards!![guardIndex]
 
             retString = guard + retString
 
             if (retString.length() < length) {
-                guardIndex = (numberHashInt + retString.toCharArray()[2]) % guards!!.length()
-                guard = guards!!.toCharArray()[guardIndex]
+                guardIndex = (numberHashInt + retString[2]) % guards!!.length()
+                guard = guards!![guardIndex]
 
                 retString += guard
             }
@@ -166,7 +166,7 @@ public class Hashids(salt: String = "", length: Int = 0, alphabet: String = "abc
         val i = if (hashArray.size() == 3 || hashArray.size() == 2) 1 else 0
         hashBreakdown = hashArray[i]
 
-        val lottery = hashBreakdown.toCharArray()[0]
+        val lottery = hashBreakdown[0]
 
         hashBreakdown = hashBreakdown.substring(1)
         hashBreakdown = hashBreakdown.replaceAll("[" + seps + "]", " ")
@@ -240,7 +240,6 @@ public class Hashids(salt: String = "", length: Int = 0, alphabet: String = "abc
 
         var shuffled = alphabet
 
-        val saltArray = salt.toCharArray()
         val saltLength = salt.length()
 
         var i = shuffled.length() - 1
@@ -249,12 +248,12 @@ public class Hashids(salt: String = "", length: Int = 0, alphabet: String = "abc
 
         while (i > 0) {
             v %= saltLength
-            val integer = saltArray[v].toInt()
+            val integer = salt[v].toInt()
             p += integer
             val j = (integer + v + p) % i
 
-            val temp = shuffled.charAt(j)
-            shuffled = shuffled.substring(0, j) + shuffled.charAt(i) + shuffled.substring(j + 1)
+            val temp = shuffled[j]
+            shuffled = shuffled.substring(0, j) + shuffled[i] + shuffled.substring(j + 1)
             shuffled = shuffled.substring(0, i) + temp + shuffled.substring(i + 1)
 
             i--
@@ -268,10 +267,9 @@ public class Hashids(salt: String = "", length: Int = 0, alphabet: String = "abc
         var current = input
         var hash = ""
         val length = alphabet.length()
-        val array = alphabet.toCharArray()
 
         do {
-            hash = array[(current % length.toLong()).toInt()] + hash
+            hash = alphabet[(current % length.toLong()).toInt()] + hash
             current /= length
         } while (current > 0)
 
@@ -280,11 +278,10 @@ public class Hashids(salt: String = "", length: Int = 0, alphabet: String = "abc
 
     private fun unhash(input: String, alphabet: String): Long? {
         var number: Long = 0
-        val inputArray = input.toCharArray()
         val length = input.length() - 1
 
         for (i in 0..length) {
-            val position = alphabet.indexOf(inputArray[i]).toLong()
+            val position = alphabet.indexOf(input[i]).toLong()
             number += (position.toDouble() * Math.pow(alphabet.length().toDouble(), (input.length() - i - 1).toDouble())).toLong()
         }
 
@@ -301,7 +298,7 @@ public class Hashids(salt: String = "", length: Int = 0, alphabet: String = "abc
         val length = this.length() - 1
 
         for (index in 0..length) {
-            var current: kotlin.String = "" + this.charAt(index)
+            var current: kotlin.String = "" + this[index]
 
             if (!unique.contains(current) && current != " ")
                 unique += current
