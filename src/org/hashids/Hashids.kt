@@ -278,10 +278,9 @@ public class Hashids(salt: String = "", length: Int = 0, alphabet: String = "abc
 
     private fun unhash(input: String, alphabet: String): Long? {
         var number: Long = 0
-        val length = input.length() - 1
 
-        for (i in 0..length) {
-            val position = alphabet.indexOf(input[i]).toLong()
+        for ((i, c) in input.withIndex()) {
+            val position = alphabet.indexOf(c).toLong()
             number += (position.toDouble() * Math.pow(alphabet.length().toDouble(), (input.length() - i - 1).toDouble())).toLong()
         }
 
@@ -295,10 +294,9 @@ public class Hashids(salt: String = "", length: Int = 0, alphabet: String = "abc
 
     fun kotlin.String.unique(): kotlin.String {
         var unique = ""
-        val length = this.length() - 1
 
-        for (index in 0..length) {
-            var current: kotlin.String = "" + this[index]
+        for (c in this) {
+            var current: kotlin.String = "" + c
 
             if (!unique.contains(current) && current != " ")
                 unique += current
