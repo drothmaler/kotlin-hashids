@@ -99,17 +99,12 @@ public class Hashids(salt: String = "", length: Int = 0, alphabet: String = "abc
         var alphabet = this.alphabet
         val retInt = alphabet.toCharArray()[numberHashInt % alphabet.length()]
 
-        var num: Long
-        val sepsIndex: Int
-        var guardIndex: Int
-        val buffer: String
         var retString = retInt + ""
-        var guard: Char
 
 
         for (i in numbers.indices) {
-            num = numbers[i]
-            buffer = retInt + salt + alphabet
+            var num = numbers[i]
+            val buffer = retInt + salt + alphabet
 
             alphabet = consistentShuffle(alphabet, buffer.substring(0, alphabet.length()))
             val last = hash(num, alphabet)
@@ -118,14 +113,14 @@ public class Hashids(salt: String = "", length: Int = 0, alphabet: String = "abc
 
             if (i + 1 < numbers.size()) {
                 num %= (last.toCharArray()[0] + i)
-                sepsIndex = (num % seps.length()).toInt()
+                val sepsIndex = (num % seps.length()).toInt()
                 retString += seps.toCharArray()[sepsIndex]
             }
         }
 
         if (retString.length() < length) {
-            guardIndex = (numberHashInt + retString.toCharArray()[0]) % guards!!.length()
-            guard = guards!!.toCharArray()[guardIndex]
+            var guardIndex = (numberHashInt + retString.toCharArray()[0]) % guards!!.length()
+            var guard = guards!!.toCharArray()[guardIndex]
 
             retString = guard + retString
 
@@ -161,18 +156,14 @@ public class Hashids(salt: String = "", length: Int = 0, alphabet: String = "abc
         if (hash == "")
             return longArray()
 
-        var alphabet = alphabet
+        var alphabet = this.alphabet
         val retArray = ArrayList<Long>()
 
-        var i = 0
         val regexp = "[" + guards + "]"
         var hashBreakdown = hash.replaceAll(regexp, " ")
         var hashArray = hashBreakdown.split(" ")
 
-        if (hashArray.size() == 3 || hashArray.size() == 2) {
-            i = 1
-        }
-
+        val i = if (hashArray.size() == 3 || hashArray.size() == 2) 1 else 0
         hashBreakdown = hashArray[i]
 
         val lottery = hashBreakdown.toCharArray()[0]
@@ -181,9 +172,8 @@ public class Hashids(salt: String = "", length: Int = 0, alphabet: String = "abc
         hashBreakdown = hashBreakdown.replaceAll("[" + seps + "]", " ")
         hashArray = hashBreakdown.split(" ")
 
-        val buffer: String
         for (subHash in hashArray) {
-            buffer = lottery + salt + alphabet
+            val buffer = lottery + salt + alphabet
             alphabet = consistentShuffle(alphabet, buffer.substring(0, alphabet.length()))
             retArray.add(unhash(subHash, alphabet))
         }
@@ -252,9 +242,6 @@ public class Hashids(salt: String = "", length: Int = 0, alphabet: String = "abc
 
         val saltArray = salt.toCharArray()
         val saltLength = salt.length()
-        val integer: Int
-        val j: Int
-        val temp: Char
 
         var i = shuffled.length() - 1
         var v = 0
@@ -262,11 +249,11 @@ public class Hashids(salt: String = "", length: Int = 0, alphabet: String = "abc
 
         while (i > 0) {
             v %= saltLength
-            integer = saltArray[v].toInt()
+            val integer = saltArray[v].toInt()
             p += integer
-            j = (integer + v + p) % i
+            val j = (integer + v + p) % i
 
-            temp = shuffled.charAt(j)
+            val temp = shuffled.charAt(j)
             shuffled = shuffled.substring(0, j) + shuffled.charAt(i) + shuffled.substring(j + 1)
             shuffled = shuffled.substring(0, i) + temp + shuffled.substring(i + 1)
 
@@ -293,12 +280,11 @@ public class Hashids(salt: String = "", length: Int = 0, alphabet: String = "abc
 
     private fun unhash(input: String, alphabet: String): Long? {
         var number: Long = 0
-        val position: Long
         val inputArray = input.toCharArray()
         val length = input.length() - 1
 
         for (i in 0..length) {
-            position = alphabet.indexOf(inputArray[i]).toLong()
+            val position = alphabet.indexOf(inputArray[i]).toLong()
             number += (position.toDouble() * Math.pow(alphabet.length().toDouble(), (input.length() - i - 1).toDouble())).toLong()
         }
 
