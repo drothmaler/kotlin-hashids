@@ -155,7 +155,6 @@ public class Hashids(salt: String = "", length: Int = 0, alphabet: String = "abc
             return longArray()
 
         var alphabet = this.alphabet
-        val retArray = ArrayList<Long>()
 
         val regexp = "[" + guards + "]"
         var hashBreakdown = hash.replaceAll(regexp, " ")
@@ -170,6 +169,7 @@ public class Hashids(salt: String = "", length: Int = 0, alphabet: String = "abc
         hashBreakdown = hashBreakdown.replaceAll("[" + seps + "]", " ")
         hashArray = hashBreakdown.split(" ")
 
+        val retArray = ArrayList<Long>()
         for (subHash in hashArray) {
             val buffer = lottery + salt + alphabet
             alphabet = consistentShuffle(alphabet, buffer.substring(0, alphabet.length()))
