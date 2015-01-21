@@ -35,9 +35,8 @@ public class Hashids(salt: String = "", length: Int = 0, alphabet: String = "abc
          * seps should contain only characters present in alphabet;
          * alphabet should not contains seps
          */
-        val sepsLength = seps.length() - 1
-        for (index in 0..sepsLength) {
-            val position = this.alphabet.indexOf(seps[index])
+        for ((index, sep) in seps.withIndex()) {
+            val position = this.alphabet.indexOf(sep)
 
             if (position == -1) {
                 seps = seps.substring(0, index) + " " + seps.substring(index + 1)
@@ -100,7 +99,6 @@ public class Hashids(salt: String = "", length: Int = 0, alphabet: String = "abc
         val retInt = alphabet[numberHashInt % alphabet.length()]
 
         var retString = retInt + ""
-
 
         for (i in numbers.indices) {
             var num = numbers[i]
