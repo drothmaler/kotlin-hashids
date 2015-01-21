@@ -290,11 +290,11 @@ public class Hashids(salt: String = "", length: Int = 0, alphabet: String = "abc
         return "1.0.0"
     }
 
-    fun kotlin.String.unique(): kotlin.String {
+    fun String.unique(): String {
         var unique = ""
 
         for (c in this) {
-            var current: kotlin.String = "" + c
+            var current = "" + c
 
             if (!unique.contains(current) && current != " ")
                 unique += current
