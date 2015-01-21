@@ -17,7 +17,7 @@ public class Hashids(salt: String = "", length: Int = 0, alphabet: String = "abc
     private val guardDiv: Int = 12
 
     private var seps: String = "cfhistuCFHISTU"
-    private var guards: String? = null
+    private var guards: String
 
     private var salt: String
     private var length: Int
@@ -119,14 +119,14 @@ public class Hashids(salt: String = "", length: Int = 0, alphabet: String = "abc
         }
 
         if (retString.length() < length) {
-            var guardIndex = (numberHashInt + retString[0]) % guards!!.length()
-            var guard = guards!![guardIndex]
+            var guardIndex = (numberHashInt + retString[0]) % guards.length()
+            var guard = guards[guardIndex]
 
             retString = guard + retString
 
             if (retString.length() < length) {
-                guardIndex = (numberHashInt + retString[2]) % guards!!.length()
-                guard = guards!![guardIndex]
+                guardIndex = (numberHashInt + retString[2]) % guards.length()
+                guard = guards[guardIndex]
 
                 retString += guard
             }
