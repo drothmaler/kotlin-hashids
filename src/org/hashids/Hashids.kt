@@ -23,6 +23,8 @@ public class Hashids(salt: String = "", length: Int = 0, alphabet: String = "abc
     private var length: Int
     private var alphabet: String
 
+    private val whitespaceChars = "\\s+".toRegex()
+
     init {
         this.salt = salt
         this.length = if (length > 0) length else 0
@@ -44,8 +46,8 @@ public class Hashids(salt: String = "", length: Int = 0, alphabet: String = "abc
                 this.alphabet = this.alphabet.substring(0, position) + " " + this.alphabet.substring(position + 1)
             }
         }
-        this.alphabet = this.alphabet.replaceAll("\\s+", "")
-        seps = seps.replaceAll("\\s+", "")
+        this.alphabet = this.alphabet.replace(this.whitespaceChars, "")
+        seps = seps.replace(this.whitespaceChars, "")
 
         seps = consistentShuffle(seps, this.salt)
 
@@ -110,20 +112,20 @@ public class Hashids(salt: String = "", length: Int = 0, alphabet: String = "abc
             retString += last
 
             if (i + 1 < numbers.size()) {
-                num %= (last[0] + i)
+                num %= (last[0].toInt() + i)
                 val sepsIndex = (num % seps.length()).toInt()
                 retString += seps[sepsIndex]
             }
         }
 
         if (retString.length() < length) {
-            var guardIndex = (numberHashInt + retString[0]) % guards.length()
+            var guardIndex = (numberHashInt + retString[0].toInt()) % guards.length()
             var guard = guards[guardIndex]
 
             retString = guard + retString
 
             if (retString.length() < length) {
-                guardIndex = (numberHashInt + retString[2]) % guards.length()
+                guardIndex = (numberHashInt + retString[2].toInt()) % guards.length()
                 guard = guards[guardIndex]
 
                 retString += guard
@@ -152,13 +154,12 @@ public class Hashids(salt: String = "", length: Int = 0, alphabet: String = "abc
      */
     fun decode(hash: String): LongArray {
         if (hash == "")
-            return longArray()
+            return longArrayOf()
 
         var alphabet = this.alphabet
 
-        val regexp = "[" + guards + "]"
-        var hashBreakdown = hash.replaceAll(regexp, " ")
-        var hashArray = hashBreakdown.split(" ")
+        var hashBreakdown = hash.replace("[$guards]".toRegex(), " ")
+        var hashArray = hashBreakdown.splitBy(" ")
 
         val i = if (hashArray.size() == 3 || hashArray.size() == 2) 1 else 0
         hashBreakdown = hashArray[i]
@@ -166,8 +167,8 @@ public class Hashids(salt: String = "", length: Int = 0, alphabet: String = "abc
         val lottery = hashBreakdown[0]
 
         hashBreakdown = hashBreakdown.substring(1)
-        hashBreakdown = hashBreakdown.replaceAll("[" + seps + "]", " ")
-        hashArray = hashBreakdown.split(" ")
+        hashBreakdown = hashBreakdown.replace(("[$seps]").toRegex(), " ")
+        hashArray = hashBreakdown.splitBy(" ")
 
         val retArray = ArrayList<Long>()
         for (subHash in hashArray) {
@@ -195,7 +196,7 @@ public class Hashids(salt: String = "", length: Int = 0, alphabet: String = "abc
      * @return The encrypt string
      */
     fun encodeHex(hexa: String): String {
-        if (!hexa.matches("^[0-9a-fA-F]+$"))
+        if (!hexa.matches("^[0-9a-fA-F]+$".toRegex()))
             return ""
 
         val matched = ArrayList<Long>()

@@ -21,14 +21,14 @@ public class HashidTests() {
   val hashids = Hashids("this is my salt")
 
   val numbers: LongArray = hashids.decode("NkK9");
-  assertArrayEquals(longArray(12345L), numbers)
+  assertArrayEquals(longArrayOf(12345L), numbers)
  }
 
  Test fun DecodingWithDifferentSalt() {
   val hashids = Hashids("this is my pepper")
 
   val numbers: LongArray = hashids.decode("NkK9")
-  assertArrayEquals(longArray(), numbers)
+  assertArrayEquals(longArrayOf(), numbers)
  }
 
  Test fun DecodingSeveralNumbers() {
@@ -49,7 +49,7 @@ public class HashidTests() {
   val hashids = Hashids("this is my salt", 8)
 
   val numbers = hashids.decode("gB0NV05e")
-  assertArrayEquals(longArray(1), numbers)
+  assertArrayEquals(longArrayOf(1), numbers)
  }
 
  Test fun SpecifyingCustomIdAlphabet() {
